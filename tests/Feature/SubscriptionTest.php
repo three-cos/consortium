@@ -58,4 +58,23 @@ class SubscriptionTest extends TestCase
         $this->assertEquals($user->id, $topic->subscribers->first()->id);
         $this->assertEquals($topic->id, $user->topics->first()->id);
     }
+
+    /**
+     * @return void
+     */
+    public function test_user_can_unsubscribe_from_all_topics_at_once()
+    {
+        $user = User::factory()->create();
+        $topic_1 = Topic::factory()->create();
+        $topic_2 = Topic::factory()->create();
+
+        $user->subscribeTo($topic_1);
+        $user->subscribeTo($topic_2);
+
+        $this->assertDatabaseCount('subscriptions', 2);
+
+        $user->unsubscribeFromAllTopics();
+
+        $this->assertDatabaseCount('subscriptions', 0);
+    }
 }

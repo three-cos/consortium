@@ -55,4 +55,15 @@ class Subscription extends Model
     {
         $user->topics()->detach($topic);
     }
+
+    /**
+     * Отписка пользователя от всех рубрик
+     *
+     * @param  \App\Models\User $user
+     * @return void
+     */
+    public static function unsubscribeFromAll(User $user): void
+    {
+        $user->topics()->detach();
+    }
 }

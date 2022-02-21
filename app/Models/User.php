@@ -74,4 +74,9 @@ class User extends Authenticatable
     {
         Subscription::unsubscribe($this, $topic);
     }
+
+    public function unsubscribeFromAllTopics(): void
+    {
+        Subscription::unsubscribeFromAll($this);
+    }
 }
