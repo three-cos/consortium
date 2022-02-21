@@ -47,7 +47,7 @@ class User extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function topics()
+    public function subscriptions()
     {
         return $this->belongsToMany(Topic::class, 'subscriptions');
     }

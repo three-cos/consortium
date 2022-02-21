@@ -41,7 +41,7 @@ class Subscription extends Model
      */
     public static function subscribe(User $user, Topic $topic): void
     {
-        $user->topics()->attach($topic);
+        $user->subscriptions()->attach($topic);
     }
 
     /**
@@ -53,7 +53,7 @@ class Subscription extends Model
      */
     public static function unsubscribe(User $user, Topic $topic): void
     {
-        $user->topics()->detach($topic);
+        $user->subscriptions()->detach($topic);
     }
 
     /**
@@ -64,6 +64,6 @@ class Subscription extends Model
      */
     public static function unsubscribeFromAll(User $user): void
     {
-        $user->topics()->detach();
+        $user->subscriptions()->detach();
     }
 }

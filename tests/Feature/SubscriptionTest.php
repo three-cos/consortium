@@ -56,7 +56,7 @@ class SubscriptionTest extends TestCase
         $user->subscribeTo($topic);
 
         $this->assertEquals($user->id, $topic->subscribers->first()->id);
-        $this->assertEquals($topic->id, $user->topics->first()->id);
+        $this->assertEquals($topic->id, $user->subscriptions->first()->id);
     }
 
     /**
