@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Resources\TopicCollection;
+use App\Http\Resources\TopicResource;
+use App\Models\Topic;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +17,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Список Рубрик
+Route::get('/topics', function (Request $request) {
+    return new TopicCollection(Topic::all());
+});
+
+// Информация о Рубрике
+Route::get('/topic/{id}', function (Request $request, int $id) {
+    return new TopicResource(Topic::findOrFail($id));
 });
