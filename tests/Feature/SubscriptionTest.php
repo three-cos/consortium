@@ -22,7 +22,7 @@ class SubscriptionTest extends TestCase
 
         $user->subscribeTo($topic);
 
-        $this->assertDatabaseHas('subscriptions', ['user_id' => 1, 'topic_id' => 1]);
+        $this->assertDatabaseHas('subscriptions', ['user_id' => $user->id, 'topic_id' => $topic->id]);
     }
 
     /**
