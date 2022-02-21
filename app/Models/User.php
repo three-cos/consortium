@@ -41,4 +41,37 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Список рубрик на которые подписан пользователь
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function topics()
+    {
+        return $this->belongsToMany(Topic::class, 'subscriptions');
+    }
+
+    /**
+     * Подписать пользователя на рубрику
+     *
+     * @param  \App\Models\Topic $topic
+     * @return void
+     */
+    public function subscribeTo(Topic $topic): void
+    {
+        Subscription::subscribe($this, $topic);
+    }
+
+
+    /**
+     * Отписать пользователя от рубрики
+     *
+     * @param  \App\Models\Topic $topic
+     * @return void
+     */
+    public function unsubscribeFrom(Topic $topic): void
+    {
+        Subscription::unsubscribe($this, $topic);
+    }
 }
