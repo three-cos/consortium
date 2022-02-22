@@ -31,7 +31,7 @@ class ApiTest extends TestCase
             'data' => $collection,
         ];
 
-        $response->assertExactJson($expected);
+        $response->assertJsonFragment($expected);
     }
 
     /**
