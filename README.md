@@ -1,8 +1,9 @@
 ## Тестовое задание для Консорциум кодекс
 
-Запуск
+### Запуск
 ```php
 /vendor/bin/sail up
+/vendor/bin/sail artisan migrate --seed
 ```
 
 ### API
