@@ -42,7 +42,10 @@ class Subscription extends Model
     public static function subscribe(User $user, Topic $topic): void
     {
         if (!$user->subscriptions()->find($topic->id)) {
-            $user->subscriptions()->attach($topic);
+            $user->subscriptions()->attach($topic, [
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
         }
     }
 
