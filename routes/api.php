@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Route;
 
 // Список Рубрик
 Route::get('/topics', function (Request $request) {
-    return new TopicCollection(Topic::all());
+    return new TopicCollection(Topic::paginate(config('api.items_per_page')));
 })->name('api.topics');
 
 // Информация о Рубрике
@@ -59,13 +59,13 @@ Route::get('/topics/unsubscribe/{user:email}', function (Request $request, User 
 })->name('api.topic.unsubscribeAll');
 
 Route::get('/users', function (Request $reuest) {
-    return new UserCollection(User::all());
+    return new UserCollection(User::paginate(config('api.items_per_page')));
 })->name('api.users');
 
 Route::get('/user/{user}/subscriptions', function (Request $request, User $user) {
-    return new TopicCollection($user->subscriptions()->get());
+    return new TopicCollection($user->subscriptions()->paginate(config('api.items_per_page')));
 })->name('api.user.subscriptions');
 
 Route::get('/topic/{topic}/subscribers', function (Request $request, Topic $topic) {
-    return new UserCollection($topic->subscribers);
+    return new UserCollection($topic->subscribers()->paginate(config('api.items_per_page')));
 })->name('api.topic.subscribers');
