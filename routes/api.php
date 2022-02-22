@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\RequireApiToken;
 use App\Http\Resources\TopicCollection;
 use App\Http\Resources\TopicResource;
 use App\Http\Resources\UserCollection;
@@ -19,6 +20,12 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::get('/auth', function (Request $request) {
+    return new Response([
+        'token' => md5(time()), // временный вариант
+    ], 200);
+})->name('api.auth');
 
 // Список Рубрик
 Route::get('/topics', function (Request $request) {
@@ -64,8 +71,8 @@ Route::get('/users', function (Request $reuest) {
 
 Route::get('/user/{user}/subscriptions', function (Request $request, User $user) {
     return new TopicCollection($user->subscriptions()->paginate(config('api.items_per_page')));
-})->name('api.user.subscriptions');
+})->name('api.user.subscriptions')->middleware(RequireApiToken::class);
 
 Route::get('/topic/{topic}/subscribers', function (Request $request, Topic $topic) {
     return new UserCollection($topic->subscribers()->paginate(config('api.items_per_page')));
-})->name('api.topic.subscribers');
+})->name('api.topic.subscribers')->middleware(RequireApiToken::class);

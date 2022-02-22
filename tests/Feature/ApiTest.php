@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Middleware\RequireApiToken;
 use App\Models\Topic;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -70,6 +71,8 @@ class ApiTest extends TestCase
      */
     public function test_topic_can_get_all_subscribers()
     {
+        $this->withoutMiddleware(RequireApiToken::class);
+
         $topic = Topic::factory(1)->create()->first();
         [$user_1, $user_2] = User::factory(2)->create();
 
@@ -86,6 +89,8 @@ class ApiTest extends TestCase
      */
     public function test_user_can_get_all_subscriptions()
     {
+        $this->withoutMiddleware(RequireApiToken::class);
+
         [$topic_1, $topic_2] = Topic::factory(2)->create();
         $user = User::factory()->create()->first();
 
@@ -95,5 +100,30 @@ class ApiTest extends TestCase
         $response = $this->get(route('api.user.subscriptions', [$user]));
 
         $response->assertJsonCount(2, 'data');
+    }
+
+    /**
+     * @return void
+     */
+    public function test_api_token_works()
+    {
+        $user = User::factory()->create()->first();
+        $response = $this->get(route('api.user.subscriptions', [$user]));
+
+        $response->assertStatus(401);
+
+        $response = $this->withHeader('Authorization', 'Bearer token_here')
+            ->get(route('api.user.subscriptions', [$user]));
+
+        $response->assertStatus(200);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_api_auth_path()
+    {
+        $response = $this->get(route('api.auth'));
+        $response->assertStatus(200);
     }
 }
