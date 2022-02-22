@@ -64,4 +64,36 @@ class ApiTest extends TestCase
         $this->get(route('api.topic.unsubscribe', [$topic_2->id, $user->email]));
         $this->assertDatabaseCount('subscriptions', 0);
     }
+
+    /**
+     * @return void
+     */
+    public function test_topic_can_get_all_subscribers()
+    {
+        $topic = Topic::factory(1)->create()->first();
+        [$user_1, $user_2] = User::factory(2)->create();
+
+        $user_1->subscribeTo($topic);
+        $user_2->subscribeTo($topic);
+
+        $response = $this->get(route('api.topic.subscribers', [$topic]));
+
+        $response->assertJsonCount(2, 'data');
+    }
+
+    /**
+     * @return void
+     */
+    public function test_user_can_get_all_subscriptions()
+    {
+        [$topic_1, $topic_2] = Topic::factory(2)->create();
+        $user = User::factory()->create()->first();
+
+        $user->subscribeTo($topic_1);
+        $user->subscribeTo($topic_2);
+
+        $response = $this->get(route('api.user.subscriptions', [$user]));
+
+        $response->assertJsonCount(2, 'data');
+    }
 }

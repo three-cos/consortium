@@ -2,7 +2,9 @@
 
 use App\Http\Resources\TopicCollection;
 use App\Http\Resources\TopicResource;
+use App\Http\Resources\UserCollection;
 use App\Models\Topic;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
@@ -55,4 +57,15 @@ Route::get('/topics/unsubscribe/{user:email}', function (Request $request, User 
         'unsubscribed' => true
     ], 200);
 })->name('api.topic.unsubscribeAll');
-});
+
+Route::get('/users', function (Request $reuest) {
+    return new UserCollection(User::all());
+})->name('api.users');
+
+Route::get('/user/{user}/subscriptions', function (Request $request, User $user) {
+    return new TopicCollection($user->subscriptions()->get());
+})->name('api.user.subscriptions');
+
+Route::get('/topic/{topic}/subscribers', function (Request $request, Topic $topic) {
+    return new UserCollection($topic->subscribers);
+})->name('api.topic.subscribers');
