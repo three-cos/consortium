@@ -4,6 +4,7 @@ use App\Http\Resources\TopicCollection;
 use App\Http\Resources\TopicResource;
 use App\Models\Topic;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,9 +21,38 @@ use Illuminate\Support\Facades\Route;
 // Список Рубрик
 Route::get('/topics', function (Request $request) {
     return new TopicCollection(Topic::all());
-});
+})->name('api.topics');
 
 // Информация о Рубрике
-Route::get('/topic/{id}', function (Request $request, int $id) {
-    return new TopicResource(Topic::findOrFail($id));
+Route::get('/topic/{topic}', function (Request $request, Topic $topic) {
+    return new TopicResource($topic);
+})->name('api.topic');
+
+Route::get('/topic/{id}/subscribe/{user:email}', function (Request $request, int $topic_id, User $user) {
+    $topic = Topic::findOrFail($topic_id);
+
+    $user->subscribeTo($topic);
+
+    return new Response([
+        'subscribed' => true
+    ], 201);
+})->name('api.topic.subscribe');
+
+Route::get('/topic/{id}/unsubscribe/{user:email}', function (Request $request, int $topic_id, User $user) {
+    $topic = Topic::findOrFail($topic_id);
+
+    $user->unsubscribeFrom($topic);
+
+    return new Response([
+        'unsubscribed' => true
+    ], 200);
+})->name('api.topic.unsubscribe');
+
+Route::get('/topics/unsubscribe/{user:email}', function (Request $request, User $user) {
+    $user->unsubscribeFromAllTopics();
+
+    return new Response([
+        'unsubscribed' => true
+    ], 200);
+})->name('api.topic.unsubscribeAll');
 });
